@@ -1062,6 +1062,7 @@ __server_getspec(rpcsvc_request_t *req)
         if (ret < 0) {
             gf_msg("glusterd", GF_LOG_ERROR, errno, GD_MSG_FILE_OP_FAILED,
                    "Unable to stat %s (%s)", filename, strerror(errno));
+            op_errno = errno;
             goto fail;
         }
 
@@ -1069,7 +1070,9 @@ __server_getspec(rpcsvc_request_t *req)
         if (spec_fd < 0) {
             gf_msg("glusterd", GF_LOG_ERROR, errno, GD_MSG_FILE_OP_FAILED,
                    "Unable to open %s (%s)", filename, strerror(errno));
-            goto fail;
+            ret = -1;
+            op_errno = errno;
+	    goto fail;
         }
         ret = file_len = stbuf.st_size;
     } else {

@@ -2330,6 +2330,14 @@ post_unlock:
         cleanup_and_exit(0);
     }
 
+    if (ENOENT == ret) {
+        gf_log("mgmt", GF_LOG_ERROR,
+               "Can't stat the (volume:%s) info",
+               ctx->cmd_args.volfile_id);
+        emancipate(ctx, ret);
+        cleanup_and_exit(ret);
+    }
+
     if (ret && ctx && !ctx->active) {
         /* Do it only for the first time */
         /* Failed to get the volume file, something wrong,
